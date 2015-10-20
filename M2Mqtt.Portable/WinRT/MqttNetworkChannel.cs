@@ -1,12 +1,15 @@
 ﻿/*
 Copyright (c) 2013, 2014 Paolo Patierno
+
 All rights reserved. This program and the accompanying materials
 are made available under the terms of the Eclipse Public License v1.0
 and Eclipse Distribution License v1.0 which accompany this distribution. 
+
 The Eclipse Public License is available at 
    http://www.eclipse.org/legal/epl-v10.html
 and the Eclipse Distribution License is available at 
    http://www.eclipse.org/org/documents/edl-v10.php.
+
 Contributors:
    Paolo Patierno - initial API and implementation and/or initial documentation
 */
@@ -16,21 +19,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Windows.Networking;
-using Windows.Networking.Sockets;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Storage.Streams;
+//using Windows.Networking;
+//using Windows.Networking.Sockets;
+//using System.Runtime.InteropServices.WindowsRuntime;
+//using Windows.Storage.Streams;
 using System.Threading;
+using Sockets.Plugin;
 
 namespace uPLibrary.Networking.M2Mqtt
 {
     public class MqttNetworkChannel : IMqttNetworkChannel
     {
         // stream socket for communication
-        private StreamSocket socket;
+        private TcpSocketClient socket;
 
         // remote host information
-        private HostName remoteHostName;
+        private string remoteHostName;
         private int remotePort;
 
         // using SSL
@@ -43,7 +47,7 @@ namespace uPLibrary.Networking.M2Mqtt
         /// Constructor
         /// </summary>
         /// <param name="socket">Socket opened with the client</param>
-        public MqttNetworkChannel(StreamSocket socket)
+        public MqttNetworkChannel(TcpSocketClient socket)
         {
             this.socket = socket;
             this.sslProtocol = MqttSslProtocols.None;
@@ -58,7 +62,7 @@ namespace uPLibrary.Networking.M2Mqtt
         /// <param name="sslProtocol">SSL/TLS protocol version</param>
         public MqttNetworkChannel(string remoteHostName, int remotePort, bool secure, MqttSslProtocols sslProtocol)
         {
-            this.remoteHostName = new HostName(remoteHostName);
+            this.remoteHostName = remoteHostName; // new HostName(remoteHostName);
             this.remotePort = remotePort;
             this.secure = secure;
             this.sslProtocol = sslProtocol;
@@ -74,7 +78,7 @@ namespace uPLibrary.Networking.M2Mqtt
 
         public int Receive(byte[] buffer)
         {
-            IBuffer result;
+            //IBuffer result;
 
             // read all data needed (until fill buffer)
             int idx = 0;
@@ -84,10 +88,10 @@ namespace uPLibrary.Networking.M2Mqtt
                 // Read return 0. Avoid infinite loop.
 
                 // read is executed synchronously
-                result = this.socket.InputStream.ReadAsync(buffer.AsBuffer(), (uint)buffer.Length, InputStreamOptions.None).AsTask().Result;
-                if (result.Length == 0)
+                var numBytesRead = this.socket.ReadStream.ReadAsync(buffer, 0, buffer.Length).Result; //  buffer.AsBuffer(), (uint)buffer.Length, InputStreamOptions.None).AsTask().Result;
+                if (numBytesRead == 0)
                     return 0;
-                idx += (int)result.Length;
+                idx += (int)numBytesRead;
             }
             return buffer.Length;
         }
@@ -98,7 +102,7 @@ namespace uPLibrary.Networking.M2Mqtt
 
             try
             {
-                IBuffer result;
+                //IBuffer result;
 
                 // read all data needed (until fill buffer)
                 int idx = 0;
@@ -108,10 +112,10 @@ namespace uPLibrary.Networking.M2Mqtt
                     // Read return 0. Avoid infinite loop.
 
                     // read is executed synchronously
-                    result = this.socket.InputStream.ReadAsync(buffer.AsBuffer(), (uint)buffer.Length, InputStreamOptions.None).AsTask(cts.Token).Result;
-                    if (result.Length == 0)
+                    var numBytesRead = this.socket.ReadStream.ReadAsync(buffer, 0, buffer.Length).Result; //, InputStreamOptions.None).AsTask(cts.Token).Result;
+                    if (numBytesRead == 0)
                         return 0;
-                    idx += (int)result.Length;
+                    idx += (int)numBytesRead;
                 }
                 return buffer.Length;
             }
@@ -123,8 +127,11 @@ namespace uPLibrary.Networking.M2Mqtt
 
         public int Send(byte[] buffer)
         {
+            if (this.socket == null) throw new Exception("Socket is null");
+            if (this.socket.WriteStream == null) throw new Exception("WriteStream is null");
             // send is executed synchronously
-            return (int)this.socket.OutputStream.WriteAsync(buffer.AsBuffer()).AsTask().Result;
+            this.socket.WriteStream.WriteAsync(buffer, 0, buffer.Length).Wait();
+            return buffer.Length;
         }
 
         public void Close()
@@ -134,12 +141,12 @@ namespace uPLibrary.Networking.M2Mqtt
 
         public void Connect()
         {
-            this.socket = new StreamSocket();
+            this.socket = new TcpSocketClient();
 
             // connection is executed synchronously
             this.socket.ConnectAsync(this.remoteHostName,
-                this.remotePort.ToString(),
-                MqttSslUtility.ToSslPlatformEnum(this.sslProtocol)).AsTask().Wait();
+                this.remotePort,
+                this.sslProtocol != MqttSslProtocols.None).Wait();
         }
 
         public void Accept()
@@ -148,7 +155,7 @@ namespace uPLibrary.Networking.M2Mqtt
             return;
         }
     }
-
+    /*
     /// <summary>
     /// MQTT SSL utility class
     /// </summary>
@@ -173,4 +180,5 @@ namespace uPLibrary.Networking.M2Mqtt
             }
         }
     }
+    */
 }

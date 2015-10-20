@@ -1,4 +1,4 @@
-/*
+﻿/*
 Copyright (c) 2013, 2014 Paolo Patierno
 
 All rights reserved. This program and the accompanying materials
@@ -16,6 +16,9 @@ Contributors:
 
 using System;
 using System.Net;
+using System.Threading.Tasks;
+
+
 #if !(WINDOWS_APP || WINDOWS_PHONE_APP)
 using System.Net.Sockets;
 using System.Security.Cryptography.X509Certificates;
@@ -42,7 +45,7 @@ using System.Net.Security;
 #endif
 
 #if (WINDOWS_APP || WINDOWS_PHONE_APP)
-using Windows.Networking.Sockets;
+//using Windows.Networking.Sockets;
 #endif
 
 using System.Collections;
@@ -166,7 +169,7 @@ namespace uPLibrary.Networking.M2Mqtt
 
         // event for peer/client disconnection
         public event ConnectionClosedEventHandler ConnectionClosed;
-        
+
         // channel to communicate over the network
         private IMqttNetworkChannel channel;
 
@@ -301,7 +304,7 @@ namespace uPLibrary.Networking.M2Mqtt
         /// <param name="caCert">CA certificate for secure connection</param>
         public MqttClient(string brokerHostName, int brokerPort, bool secure, X509Certificate caCert, MqttSslProtocols sslProtocol)            
 #else
-        public MqttClient(string brokerHostName, int brokerPort, bool secure, MqttSslProtocols sslProtocol)            
+        public MqttClient(string brokerHostName, int brokerPort, bool secure, MqttSslProtocols sslProtocol)
 #endif
         {
 #if !(MF_FRAMEWORK_VERSION_V4_2 || MF_FRAMEWORK_VERSION_V4_3 || COMPACT_FRAMEWORK || WINDOWS_APP || WINDOWS_PHONE_APP)
@@ -559,8 +562,10 @@ namespace uPLibrary.Networking.M2Mqtt
             this.isRunning = true;
             this.isConnectionClosing = false;
             // start thread for receiving messages from broker
-            Fx.StartThread(this.ReceiveThread);
-            
+
+            Task.Run(() => this.ReceiveThread());
+            //Fx.StartThread(this.ReceiveThread);
+
             MqttMsgConnack connack = (MqttMsgConnack)this.SendReceive(connect);
             // if connection accepted, start keep alive timer and 
             if (connack.ReturnCode == MqttMsgConnack.CONN_ACCEPTED)
@@ -587,7 +592,7 @@ namespace uPLibrary.Networking.M2Mqtt
 
                 // start thread for raising received message event from broker
                 Fx.StartThread(this.DispatchEventThread);
-                
+
                 // start thread for handling inflight messages queue to broker asynchronously (publish and acknowledge)
                 Fx.StartThread(this.ProcessInflightThread);
 
@@ -1370,7 +1375,7 @@ namespace uPLibrary.Networking.M2Mqtt
 #else
                                 throw new MqttClientException(MqttClientErrorCode.WrongBrokerMessage);
 #endif
-                                
+
                             // CONNACK message received
                             case MqttMsgBase.MQTT_MSG_CONNACK_TYPE:
 
@@ -1505,7 +1510,7 @@ namespace uPLibrary.Networking.M2Mqtt
                                 this.EnqueueInternal(pubrel);
 
                                 break;
-                                
+
                             // PUBCOMP message received
                             case MqttMsgBase.MQTT_MSG_PUBCOMP_TYPE:
 
@@ -1598,7 +1603,7 @@ namespace uPLibrary.Networking.M2Mqtt
                     {
                         // [v3.1.1] scenarios the receiver MUST close the network connection
                         MqttClientException ex = e as MqttClientException;
-                        close = ((ex.ErrorCode == MqttClientErrorCode.InvalidFlagBits) || 
+                        close = ((ex.ErrorCode == MqttClientErrorCode.InvalidFlagBits) ||
                                 (ex.ErrorCode == MqttClientErrorCode.InvalidProtocolName) ||
                                 (ex.ErrorCode == MqttClientErrorCode.InvalidConnectFlags));
                     }
@@ -1609,7 +1614,7 @@ namespace uPLibrary.Networking.M2Mqtt
                         close = true;
                     }
 #endif
-                    
+
                     if (close)
                     {
                         // wake up thread that will notify connection is closing
@@ -1626,7 +1631,7 @@ namespace uPLibrary.Networking.M2Mqtt
         {
             int delta = 0;
             int wait = this.keepAlivePeriod;
-            
+
             // create event to signal that current thread is end
             this.keepAliveEventEnd = new AutoResetEvent(false);
 
@@ -1652,8 +1657,8 @@ namespace uPLibrary.Networking.M2Mqtt
                         this.OnConnectionClosing();
 #else
                         // ... send keep alive
-						this.Ping();
-						wait = this.keepAlivePeriod;
+                        this.Ping();
+                        wait = this.keepAlivePeriod;
 #endif
                     }
                     else
@@ -1821,7 +1826,7 @@ namespace uPLibrary.Networking.M2Mqtt
                             }
                         }
                     }
-                    
+
                     // all events for received messages dispatched, check if there is closing connection
                     if ((this.eventQueue.Count == 0) && this.isConnectionClosing)
                     {
@@ -2365,7 +2370,7 @@ namespace uPLibrary.Networking.M2Mqtt
                                             // current message not acknowledged
                                             if (!acknowledge)
                                             {
-                                                delta = Environment.TickCount - msgContext.Timestamp; 
+                                                delta = Environment.TickCount - msgContext.Timestamp;
                                                 // check timeout for receiving PUBCOMP since PUBREL was sent
                                                 if (delta >= this.settings.DelayOnRetry)
                                                 {
@@ -2434,7 +2439,7 @@ namespace uPLibrary.Networking.M2Mqtt
                                                 if (msgContext.Attempt > 1)
                                                     pubrel.DupFlag = true;
                                             }
-                                            
+
                                             this.Send(pubrel);
 
                                             // update timeout : minimum between delay (based on current message sent) or current timeout

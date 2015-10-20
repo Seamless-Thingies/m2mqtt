@@ -1,0 +1,187 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <MinimumVisualStudioVersion>10.0</MinimumVisualStudioVersion>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{F5E288BC-90DE-4912-AEA1-53AD4CFA00AE}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>uPLibrary.Networking.M2Mqtt</RootNamespace>
+    <AssemblyName>M2Mqtt.Portable</AssemblyName>
+    <DefaultLanguage>en-US</DefaultLanguage>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <TargetFrameworkProfile>Profile7</TargetFrameworkProfile>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;WINDOWS_APP,WINDOWS_PHONE_APP,SSL</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="..\M2Mqtt\Exceptions\MqttClientException.cs">
+      <Link>Exceptions\MqttClientException.cs</Link>
+    </Compile>
+    <Compile Include="..\M2Mqtt\Exceptions\MqttCommunicationException.cs">
+      <Link>Exceptions\MqttCommunicationException.cs</Link>
+    </Compile>
+    <Compile Include="..\M2Mqtt\Exceptions\MqttConnectionException.cs">
+      <Link>Exceptions\MqttConnectionException.cs</Link>
+    </Compile>
+    <Compile Include="..\M2Mqtt\Exceptions\MqttTimeoutException.cs">
+      <Link>Exceptions\MqttTimeoutException.cs</Link>
+    </Compile>
+    <Compile Include="..\M2Mqtt\IMqttNetworkChannel.cs">
+      <Link>IMqttNetworkChannel.cs</Link>
+    </Compile>
+    <Compile Include="..\M2Mqtt\Internal\InternalEvent.cs">
+      <Link>Internal\InternalEvent.cs</Link>
+    </Compile>
+    <Compile Include="..\M2Mqtt\Internal\MsgInternalEvent.cs">
+      <Link>Internal\MsgInternalEvent.cs</Link>
+    </Compile>
+    <Compile Include="..\M2Mqtt\Internal\MsgPublishedInternalEvent.cs">
+      <Link>Internal\MsgPublishedInternalEvent.cs</Link>
+    </Compile>
+    <Compile Include="..\M2Mqtt\Messages\MqttMsgBase.cs">
+      <Link>Messages\MqttMsgBase.cs</Link>
+    </Compile>
+    <Compile Include="..\M2Mqtt\Messages\MqttMsgConnack.cs">
+      <Link>Messages\MqttMsgConnack.cs</Link>
+    </Compile>
+    <Compile Include="..\M2Mqtt\Messages\MqttMsgConnect.cs">
+      <Link>Messages\MqttMsgConnect.cs</Link>
+    </Compile>
+    <Compile Include="..\M2Mqtt\Messages\MqttMsgConnectEventArgs.cs">
+      <Link>Messages\MqttMsgConnectEventArgs.cs</Link>
+    </Compile>
+    <Compile Include="..\M2Mqtt\Messages\MqttMsgContext.cs">
+      <Link>Messages\MqttMsgContext.cs</Link>
+    </Compile>
+    <Compile Include="..\M2Mqtt\Messages\MqttMsgDisconnect.cs">
+      <Link>Messages\MqttMsgDisconnect.cs</Link>
+    </Compile>
+    <Compile Include="..\M2Mqtt\Messages\MqttMsgPingReq.cs">
+      <Link>Messages\MqttMsgPingReq.cs</Link>
+    </Compile>
+    <Compile Include="..\M2Mqtt\Messages\MqttMsgPingResp.cs">
+      <Link>Messages\MqttMsgPingResp.cs</Link>
+    </Compile>
+    <Compile Include="..\M2Mqtt\Messages\MqttMsgPuback.cs">
+      <Link>Messages\MqttMsgPuback.cs</Link>
+    </Compile>
+    <Compile Include="..\M2Mqtt\Messages\MqttMsgPubcomp.cs">
+      <Link>Messages\MqttMsgPubcomp.cs</Link>
+    </Compile>
+    <Compile Include="..\M2Mqtt\Messages\MqttMsgPublish.cs">
+      <Link>Messages\MqttMsgPublish.cs</Link>
+    </Compile>
+    <Compile Include="..\M2Mqtt\Messages\MqttMsgPublishedEventArgs.cs">
+      <Link>Messages\MqttMsgPublishedEventArgs.cs</Link>
+    </Compile>
+    <Compile Include="..\M2Mqtt\Messages\MqttMsgPublishEventArgs.cs">
+      <Link>Messages\MqttMsgPublishEventArgs.cs</Link>
+    </Compile>
+    <Compile Include="..\M2Mqtt\Messages\MqttMsgPubrec.cs">
+      <Link>Messages\MqttMsgPubrec.cs</Link>
+    </Compile>
+    <Compile Include="..\M2Mqtt\Messages\MqttMsgPubrel.cs">
+      <Link>Messages\MqttMsgPubrel.cs</Link>
+    </Compile>
+    <Compile Include="..\M2Mqtt\Messages\MqttMsgSuback.cs">
+      <Link>Messages\MqttMsgSuback.cs</Link>
+    </Compile>
+    <Compile Include="..\M2Mqtt\Messages\MqttMsgSubscribe.cs">
+      <Link>Messages\MqttMsgSubscribe.cs</Link>
+    </Compile>
+    <Compile Include="..\M2Mqtt\Messages\MqttMsgSubscribedEventArgs.cs">
+      <Link>Messages\MqttMsgSubscribedEventArgs.cs</Link>
+    </Compile>
+    <Compile Include="..\M2Mqtt\Messages\MqttMsgSubscribeEventArgs.cs">
+      <Link>Messages\MqttMsgSubscribeEventArgs.cs</Link>
+    </Compile>
+    <Compile Include="..\M2Mqtt\Messages\MqttMsgUnsuback.cs">
+      <Link>Messages\MqttMsgUnsuback.cs</Link>
+    </Compile>
+    <Compile Include="..\M2Mqtt\Messages\MqttMsgUnsubscribe.cs">
+      <Link>Messages\MqttMsgUnsubscribe.cs</Link>
+    </Compile>
+    <Compile Include="..\M2Mqtt\Messages\MqttMsgUnsubscribedEventArgs.cs">
+      <Link>Messages\MqttMsgUnsubscribedEventArgs.cs</Link>
+    </Compile>
+    <Compile Include="..\M2Mqtt\Messages\MqttMsgUnsubscribeEventArgs.cs">
+      <Link>Messages\MqttMsgUnsubscribeEventArgs.cs</Link>
+    </Compile>
+    <Compile Include="..\M2Mqtt\MqttClient.cs">
+      <Link>MqttClient.cs</Link>
+    </Compile>
+    <Compile Include="..\M2Mqtt\MqttSecurity.cs">
+      <Link>MqttSecurity.cs</Link>
+    </Compile>
+    <Compile Include="..\M2Mqtt\MqttSettings.cs">
+      <Link>MqttSettings.cs</Link>
+    </Compile>
+    <Compile Include="..\M2Mqtt\Session\MqttBrokerSession.cs">
+      <Link>Session\MqttBrokerSession.cs</Link>
+    </Compile>
+    <Compile Include="..\M2Mqtt\Session\MqttClientSession.cs">
+      <Link>Session\MqttClientSession.cs</Link>
+    </Compile>
+    <Compile Include="..\M2Mqtt\Session\MqttSession.cs">
+      <Link>Session\MqttSession.cs</Link>
+    </Compile>
+    <Compile Include="..\M2Mqtt\Utility\QueueExtension.cs">
+      <Link>Utility\QueueExtension.cs</Link>
+    </Compile>
+    <Compile Include="..\M2Mqtt\Utility\Trace.cs">
+      <Link>Utility\Trace.cs</Link>
+    </Compile>
+    <Compile Include="..\M2Mqtt\WinRT\Fx.cs">
+      <Link>WinRT\Fx.cs</Link>
+    </Compile>
+    <Compile Include="..\M2Mqtt\WinRT\Hashtable.cs">
+      <Link>WinRT\Hashtable.cs</Link>
+    </Compile>
+    <Compile Include="..\M2Mqtt\WinRT\Queue.cs">
+      <Link>WinRT\Queue.cs</Link>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WinRT\MqttNetworkChannel.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Sockets.Plugin, Version=1.3.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\rda.SocketsForPCL.1.2.2\lib\portable-net45+wp8+wpa81+win8+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Sockets.Plugin.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Sockets.Plugin.Abstractions, Version=1.3.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\rda.SocketsForPCL.1.2.2\lib\portable-net45+wp8+wpa81+win8+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Sockets.Plugin.Abstractions.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
